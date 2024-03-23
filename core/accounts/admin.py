@@ -21,7 +21,7 @@ class CustomUserAdmin(UserAdmin):
         }),
         ("Group Permissions", {
             "fields": (
-                "group", "user_permissions"
+                "groups", "user_permissions"
                 ),
         }),
         ("important date", {
