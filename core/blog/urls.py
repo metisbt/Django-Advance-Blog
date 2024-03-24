@@ -7,6 +7,11 @@ app_name = 'blog'
 urlpatterns = [
     path('fbv-index',views.indexView, name='fbv-test'),
     path("cbv-index", views.IndexView.as_view(), name='cbv-index'),
+    # path(
+    #     "go-to-django/",
+    #     RedirectView.as_view(url="https://www.djangoproject.com/"),
+    #     name="go-to-django",
+    # ),
     path(
         "go-to-index/",
         RedirectView.as_view(pattern_name="blog:index"),
