@@ -1,7 +1,9 @@
 from typing import Any
+from django.db.models.query import QuerySet
 from django.shortcuts import render
 from django.views.generic.base import TemplateView, RedirectView
 from .models import Post
+from django.views.generic import ListView
 
 # Function Base View Show a template
 '''
@@ -32,3 +34,17 @@ def redirectToMaktab(request):
 
 class RedirectToMaktab(RedirectView):
     url = 'https://maktabkhooneh.com'
+
+class PostList(ListView):
+    # get objects in different ways
+    """
+    model = Post
+    queryset = Post.objects.all()
+    """
+
+    def get_queryset(self):
+        posts = Post.objects.filter(status=True)
+        return posts
+
+    # change name object_list to posts for templates
+    context_object_name = 'posts'
