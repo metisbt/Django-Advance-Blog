@@ -48,3 +48,6 @@ class PostList(ListView):
 
     # change name object_list to posts for templates
     context_object_name = 'posts'
+
+    # for paginate
+    paginate_by = 2
