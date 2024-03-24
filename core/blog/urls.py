@@ -11,8 +11,6 @@ urlpatterns = [
     #     RedirectView.as_view(url="https://www.djangoproject.com/"),
     #     name="go-to-django",
     # ),
-
-    # for ClassViwe url must like this with '/' at the end
     path(
         "go-to-index/",
         RedirectView.as_view(pattern_name="blog:index"),
@@ -23,5 +21,6 @@ urlpatterns = [
         views.RedirectToMaktab.as_view(),
         name="redirect-to-maktabkhooneh",
     ),
+    # for PostList url must like this with '/' at the end
     path('post/', views.PostList.as_view(), name="post-list"),
 ]
