@@ -16,4 +16,9 @@ urlpatterns = [
         RedirectView.as_view(pattern_name="blog:index"),
         name="redirect-to-index",
     ),
+    path(
+        "go-to-maktabkhooneh/",
+        views.RedirectToMaktab.as_view(),
+        name="redirect-to-maktabkhooneh",
+    ),
 ]
