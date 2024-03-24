@@ -22,5 +22,6 @@ urlpatterns = [
         name="redirect-to-maktabkhooneh",
     ),
     # for PostList url must like this with '/' at the end
-    path('post/', views.PostList.as_view(), name="post-list"),
+    path('post/', views.PostListView.as_view(), name="post-list"),
+    path('post/<int:pk>/', views.PostDetailView.as_view(), name="post-detail"),
 ]

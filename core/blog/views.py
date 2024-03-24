@@ -35,12 +35,25 @@ def redirectToMaktab(request):
 class RedirectToMaktab(RedirectView):
     url = 'https://maktabkhooneh.com'
 
-class PostList(ListView):
+class PostListView(ListView):
     # get objects in different ways
     """
     model = Post
     queryset = Post.objects.all()
     """
+
+    def get_queryset(self):
+        posts = Post.objects.filter(status=True)
+        return posts
+
+    # change name object_list to posts for templates
+    context_object_name = 'posts'
+
+    # for paginate
+    paginate_by = 2
+
+class PostDetailView(ListView):
+    model = Post
 
     def get_queryset(self):
         posts = Post.objects.filter(status=True)
