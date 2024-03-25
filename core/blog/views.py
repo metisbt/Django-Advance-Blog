@@ -7,7 +7,7 @@ from django.views.generic.base import TemplateView, RedirectView
 from .models import Post
 from django.views.generic import ListView, CreateView, DetailView, FormView, UpdateView, DeleteView
 from .forms import PostForm
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
 # Function Base View Show a template
@@ -40,7 +40,8 @@ def redirectToMaktab(request):
 class RedirectToMaktab(RedirectView):
     url = 'https://maktabkhooneh.com'
 
-class PostListView(ListView):
+class PostListView(PermissionRequiredMixin,LoginRequiredMixin,ListView):
+    permission_required = 'blog.view_post'
     # get objects in different ways
     """
     model = Post
