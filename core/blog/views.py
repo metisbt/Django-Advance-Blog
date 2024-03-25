@@ -3,7 +3,8 @@ from django.db.models.query import QuerySet
 from django.shortcuts import render
 from django.views.generic.base import TemplateView, RedirectView
 from .models import Post
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView, DetailView, FormView
+from .forms import PostForm
 
 # Function Base View Show a template
 '''
@@ -52,7 +53,7 @@ class PostListView(ListView):
     # for paginate
     paginate_by = 2
 
-class PostDetailView(ListView):
+class PostDetailView(DetailView):
     model = Post
 
     def get_queryset(self):
@@ -64,3 +65,22 @@ class PostDetailView(ListView):
 
     # for paginate
     paginate_by = 2
+
+# With FormView
+'''
+class PostCreateView(FormView):
+    template_name = "postform.html"
+    form_class = PostForm
+    success_url = "/blog/post/"
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+'''
+
+# With CreateView
+class PostCreateView(CreateView):
+    model = Post
+    # fields = ['author', 'title', 'content', 'status', 'category', 'published_date']
+    form_class = PostForm
+    success_url = '/blog/post/'
