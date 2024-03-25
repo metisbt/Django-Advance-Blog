@@ -1,5 +1,7 @@
 from typing import Any
 from django.db.models.query import QuerySet
+from django.forms.models import BaseModelForm
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic.base import TemplateView, RedirectView
 from .models import Post
@@ -84,3 +86,10 @@ class PostCreateView(CreateView):
     # fields = ['author', 'title', 'content', 'status', 'category', 'published_date']
     form_class = PostForm
     success_url = '/blog/post/'
+
+    def form_valid(self, form):
+        '''
+        get user id and save before sending
+        '''
+        form.instance.author = self.request.user
+        return super().form_valid(form)
