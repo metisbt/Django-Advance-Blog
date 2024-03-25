@@ -7,6 +7,8 @@ from django.views.generic.base import TemplateView, RedirectView
 from .models import Post
 from django.views.generic import ListView, CreateView, DetailView, FormView, UpdateView, DeleteView
 from .forms import PostForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 # Function Base View Show a template
 '''
@@ -55,7 +57,7 @@ class PostListView(ListView):
     # for paginate
     paginate_by = 2
 
-class PostDetailView(DetailView):
+class PostDetailView(LoginRequiredMixin,DetailView):
     model = Post
 
     def get_queryset(self):
@@ -81,7 +83,7 @@ class PostCreateView(FormView):
 '''
 
 # With CreateView
-class PostCreateView(CreateView):
+class PostCreateView(LoginRequiredMixin,CreateView):
     model = Post
     # fields = ['author', 'title', 'content', 'status', 'category', 'published_date']
     form_class = PostForm
@@ -94,11 +96,11 @@ class PostCreateView(CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
     
-class PostEditView(UpdateView):
+class PostEditView(LoginRequiredMixin,UpdateView):
     model = Post
     form_class = PostForm
     success_url = '/blog/post/'
 
-class PostDeleteView(DeleteView):
+class PostDeleteView(LoginRequiredMixin,DeleteView):
     model = Post
     success_url = '/blog/post/'
