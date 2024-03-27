@@ -5,9 +5,10 @@ from .serializers import *
 from blog.models import Post
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework.views import APIView
 
 
-@api_view(["GET", "POST"])
+'''@api_view(["GET", "POST"])
 @permission_classes([IsAuthenticated])
 def postList(request):
     if request.method == "GET":
@@ -15,6 +16,25 @@ def postList(request):
         serialize = PostSerializer(posts, many=True)
         return Response(serialize.data)
     elif request.method == "POST":
+        serialize = PostSerializer(data=request.data)
+        serialize.is_valid(raise_exception=True)
+        serialize.save()
+        return Response(serialize.data)'''
+    
+
+class postList(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    serializer_class = PostSerializer
+
+    ''' getting a list of posts and creating new post'''
+    def get(self,request):
+        ''' retriveing a list of posts '''
+        posts = Post.objects.all()
+        serialize = PostSerializer(posts, many=True)
+        return Response(serialize.data)
+    
+    def post(self,request):
+        ''' creating a post with providing data '''
         serialize = PostSerializer(data=request.data)
         serialize.is_valid(raise_exception=True)
         serialize.save()
