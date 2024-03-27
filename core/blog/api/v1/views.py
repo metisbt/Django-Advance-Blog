@@ -28,7 +28,7 @@ class postList(APIView):
 
     ''' getting a list of posts and creating new post'''
     def get(self,request):
-        ''' retriveing a list of posts '''
+        ''' retrieving a list of posts '''
         posts = Post.objects.all()
         serialize = PostSerializer(posts, many=True)
         return Response(serialize.data)
@@ -41,7 +41,7 @@ class postList(APIView):
         return Response(serialize.data)
 
 
-@api_view(["GET", "PUT", "DELETE"])
+"""@api_view(["GET", "PUT", "DELETE"])
 @permission_classes([IsAuthenticatedOrReadOnly])
 def postDetail(request,id):
     # return 404
@@ -64,5 +64,29 @@ def postDetail(request,id):
         serialize.save()
         return Response(serialize.data)
     elif request.method == "DELETE":
+        post.delete()
+        return Response({"detail":"item removed successfully"},status=status.HTTP_204_NO_CONTENT)"""
+    
+class PostDetail(APIView):
+    ''' getting detail of the post and edit plus delete it'''
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    serializer_class = PostSerializer
+
+    def get(self, request, id):
+        ''' retrieving the post data '''
+        post = get_object_or_404(Post,pk=id)
+        serialize = self.serializer_class(post)
+        return Response(serialize.data)
+    
+    def put(self, request, id):
+        ''' editing the post data '''
+        post = get_object_or_404(Post,pk=id)
+        serialize = self.serializer_class(post,data=request.data)
+        serialize.is_valid(raise_exception=True)
+        serialize.save()
+
+    def delete(self, request, id):
+        ''' deleting the post object '''
+        post = get_object_or_404(Post,pk=id)
         post.delete()
         return Response({"detail":"item removed successfully"},status=status.HTTP_204_NO_CONTENT)
