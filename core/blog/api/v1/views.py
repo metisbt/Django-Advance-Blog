@@ -18,7 +18,7 @@ def postList(request):
         return Response(serialize.data)
 
 
-@api_view()
+@api_view(["GET", "PUT"])
 def postDetail(request,id):
     # return 404
     '''
@@ -33,5 +33,11 @@ def postDetail(request,id):
     '''
     # return 404 better one
     post = get_object_or_404(Post,pk=id)
-    serialize = PostSerializer(post)
-    return Response(serialize.data)
+    if request.method == "GET":
+        serialize = PostSerializer(post)
+        return Response(serialize.data)
+    elif request.method == "PUT":
+        serialize = PostSerializer(post,data=request.data)
+        serialize.is_valid(raise_exception=True)
+        serialize.save()
+        return Response(serialize.data)
