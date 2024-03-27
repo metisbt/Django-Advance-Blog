@@ -5,11 +5,18 @@ from blog.models import Post
 from django.shortcuts import get_object_or_404
 
 
-@api_view()
+@api_view(["GET", "POST"])
 def postList(request):
-    posts = Post.objects.all()
-    serialize = PostSerializer(posts, many=True)
-    return Response(serialize.data)
+    if request.method == "GET":
+        posts = Post.objects.all()
+        serialize = PostSerializer(posts, many=True)
+        return Response(serialize.data)
+    elif request.method == "POST":
+        serialize = PostSerializer(data=request.data)
+        serialize.is_valid(raise_exception=True)
+        serialize.save()
+        return Response(serialize.data)
+
 
 @api_view()
 def postDetail(request,id):
