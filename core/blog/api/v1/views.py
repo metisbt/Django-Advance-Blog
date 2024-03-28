@@ -6,6 +6,7 @@ from blog.models import Post
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView, ListAPIView, ListCreateAPIView
 
 
 '''@api_view(["GET", "POST"])
@@ -21,8 +22,8 @@ def postList(request):
         serialize.save()
         return Response(serialize.data)'''
     
-
-class postList(APIView):
+# with APIView
+"""class postList(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
 
@@ -38,7 +39,35 @@ class postList(APIView):
         serialize = PostSerializer(data=request.data)
         serialize.is_valid(raise_exception=True)
         serialize.save()
+        return Response(serialize.data)"""
+
+# with GenericAPIView
+"""class postList(GenericAPIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+
+    ''' getting a list of posts and creating new post'''
+    def get(self,request):
+        ''' retrieving a list of posts '''
+        queryset = self.get_queryset()
+        serialize = self.serializer_class(queryset, many=True)
         return Response(serialize.data)
+    
+    def post(self,request):
+        ''' creating a post with providing data '''
+        serialize = self.serializer_class(data=request.data)
+        serialize.is_valid(raise_exception=True)
+        serialize.save()
+        return Response(serialize.data)"""
+
+
+# with ListAPIView or ListCreateAPIView is better
+class postList(ListCreateAPIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+    
 
 
 """@api_view(["GET", "PUT", "DELETE"])
