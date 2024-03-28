@@ -26,15 +26,25 @@ class PostSerializer(serializers.ModelSerializer):
     
     # display name instead of id for category
     # category = serializers.SlugRelatedField(many=False,slug_field='name', queryset=Category.objects.all())
-    category = CategorySerializer()
+    # category = CategorySerializer()
 
     class Meta:
         model = Post
-        fields = ['id', 'title', 'author', 'status', 'content', 'snippet', 'relative_url', 'absolute_url', 'created_date', 'published_date']
+        fields = ['id', 'title', 'author', 'status', 'content', 'category', 'snippet', 'relative_url', 'absolute_url', 'created_date', 'published_date']
 
     def get_absolute_url(self,obj):
         request = self.context.get('request')
         return request.build_absolute_uri(obj)
     
     def to_representation(self, instance):
-        return super().to_representation(instance)
+        # for get request object that send by user request
+        request = self.context.get('request')
+        rep = super().to_representation(instance)
+        if request.parser_context.get('kwargs').get('pk'):
+            rep.pop('snippet', None)
+            rep.pop('relative_url', None)
+            rep.pop('absolute_url', None)
+        else:
+            rep.pop('content', None)
+        rep['category'] = CategorySerializer(instance.category).data
+        return rep
