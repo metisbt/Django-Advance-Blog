@@ -6,9 +6,9 @@ from blog.models import Post
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.generics import GenericAPIView, ListAPIView, ListCreateAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
-
+# function with APIView
 '''@api_view(["GET", "POST"])
 @permission_classes([IsAuthenticated])
 def postList(request):
@@ -22,7 +22,7 @@ def postList(request):
         serialize.save()
         return Response(serialize.data)'''
     
-# with APIView
+# class with APIView
 """class postList(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
@@ -62,14 +62,14 @@ def postList(request):
         return Response(serialize.data)"""
 
 
-# with ListAPIView or ListCreateAPIView is better
+# with ListCreateAPIView is better
 class postList(ListCreateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
     queryset = Post.objects.all()
     
 
-
+# function with APIView
 """@api_view(["GET", "PUT", "DELETE"])
 @permission_classes([IsAuthenticatedOrReadOnly])
 def postDetail(request,id):
@@ -96,7 +96,8 @@ def postDetail(request,id):
         post.delete()
         return Response({"detail":"item removed successfully"},status=status.HTTP_204_NO_CONTENT)"""
     
-class PostDetail(APIView):
+# class with APIView
+"""class PostDetail(APIView):
     ''' getting detail of the post and edit plus delete it'''
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
@@ -118,4 +119,11 @@ class PostDetail(APIView):
         ''' deleting the post object '''
         post = get_object_or_404(Post,pk=id)
         post.delete()
-        return Response({"detail":"item removed successfully"},status=status.HTTP_204_NO_CONTENT)
+        return Response({"detail":"item removed successfully"},status=status.HTTP_204_NO_CONTENT)"""
+
+# with RetrieveUpdateDestroyAPIView is better
+class PostDetail(RetrieveUpdateDestroyAPIView):
+    ''' getting detail of the post and edit plus delete it'''
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    serializer_class = PostSerializer
+    queryset = Post.objects.filter(status=True)
