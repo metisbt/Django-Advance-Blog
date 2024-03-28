@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from .permissions import IsOwnerOrReadOnly
 
 # function with APIView
 '''@api_view(["GET", "POST"])
@@ -172,7 +173,7 @@ class PostDetail(RetrieveUpdateDestroyAPIView):
 
 # with ModelViewSet
 class PostModelViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     serializer_class = PostSerializer
     queryset = Post.objects.all()
 
