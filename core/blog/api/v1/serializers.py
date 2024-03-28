@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from blog.models import Post, Category
-
+from accounts.models import Profile
 # *** defined if it depends on request otherwise we can define in model class ***
 
 
@@ -31,6 +31,7 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ['id', 'title', 'author', 'status', 'content', 'category', 'snippet', 'relative_url', 'absolute_url', 'created_date', 'published_date']
+        read_only = ['author']
 
     def get_absolute_url(self,obj):
         request = self.context.get('request')
@@ -48,3 +49,7 @@ class PostSerializer(serializers.ModelSerializer):
             rep.pop('content', None)
         rep['category'] = CategorySerializer(instance.category).data
         return rep
+    
+    def create(self, validated_data):
+        validated_data['author'] = Profile.objects.get(user__id= self.context.get('request').user.id)
+        return super().create(validated_data)
