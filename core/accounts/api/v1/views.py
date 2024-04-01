@@ -1,11 +1,15 @@
 from rest_framework import generics
-from .serializers import RegistrationSerializer, CustomAuthTokenSerializer
+from .serializers import RegistrationSerializer, CustomAuthTokenSerializer, TokenObtainPairSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+# for JWT
+# from rest_framework_simplejwt.views import TokenObtainPairView
+
+
 
 # APIView doesn't need serialization but GenericViews need it
 
@@ -45,3 +49,7 @@ class CustomDiscardAuthToken(APIView):
     def post(self, request):
         request.user.auth_token.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+# for JWT
+"""class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = TokenObtainPairSerializer"""
