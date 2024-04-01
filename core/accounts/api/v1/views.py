@@ -1,15 +1,16 @@
 from rest_framework import generics
-from .serializers import RegistrationSerializer, CustomAuthTokenSerializer, TokenObtainPairSerializer
+from .serializers import RegistrationSerializer, CustomAuthTokenSerializer, TokenObtainPairSerializer, ChangePasswordApiSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import get_user_model
 # for JWT
 # from rest_framework_simplejwt.views import TokenObtainPairView
 
-
+User = get_user_model()
 
 # APIView doesn't need serialization but GenericViews need it
 
@@ -44,12 +45,35 @@ class CustomObtainAuthToken(ObtainAuthToken):
         })
 
 class CustomDiscardAuthToken(APIView):
+    serializer_class = ChangePasswordApiSerializer
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
         request.user.auth_token.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
+class ChangePasswordApiView(generics.GenericAPIView):
+    model = User
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, queryset=None):
+        obj = self.request.user
+        return obj
+    
+    def put(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            # Check old password
+            if not self.object.check_password(serializer.data.get("old_password")):
+                return Response({"old_password": ["Wrong password."]}, status=status.HTTP_400_BAD_REQUEST)
+            # set_password also hashes the password that the user will get
+            self.object.set_password(serializer.data.get("new_password"))
+            self.object.save()
+            return Response({'detail':'Password updated successfully'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 # for JWT
 """class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = TokenObtainPairSerializer"""
