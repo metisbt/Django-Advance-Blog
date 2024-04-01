@@ -1,5 +1,6 @@
 from django.urls import path, include
 from . import views
+# for auth token
 # from rest_framework.authtoken import views
 # for JWT
 # from rest_framework_simplejwt.views import (
