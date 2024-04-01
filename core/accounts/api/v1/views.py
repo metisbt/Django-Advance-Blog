@@ -1,5 +1,5 @@
 from rest_framework import generics
-from .serializers import RegistrationSerializer, CustomAuthTokenSerializer, TokenObtainPairSerializer, ChangePasswordApiSerializer
+from .serializers import RegistrationSerializer, CustomAuthTokenSerializer, ChangePasswordApiSerializer #TokenObtainPairSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -45,7 +45,6 @@ class CustomObtainAuthToken(ObtainAuthToken):
         })
 
 class CustomDiscardAuthToken(APIView):
-    serializer_class = ChangePasswordApiSerializer
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -55,6 +54,7 @@ class CustomDiscardAuthToken(APIView):
 class ChangePasswordApiView(generics.GenericAPIView):
     model = User
     permission_classes = [IsAuthenticated]
+    serializer_class = ChangePasswordApiSerializer
 
     def get_object(self, queryset=None):
         obj = self.request.user
