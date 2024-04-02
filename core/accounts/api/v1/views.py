@@ -20,6 +20,11 @@ from mail_templated import EmailMessage
 from ..utils import EmailThread
 # for generate token manually
 from rest_framework_simplejwt.tokens import RefreshToken
+# for decode simplejwt token
+import jwt
+from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
+from django.conf import settings
+
 
 
 User = get_user_model()
@@ -145,10 +150,41 @@ class ActivationApiView(APIView):
 
     def get(self, request, token, *args, **kwargs):
         # decode -> user id
-        # object user
-        # is_verified -> True
-
+        try:
+            token = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+            user_id = token.get('user_id')
+        # if token expired
+        except ExpiredSignatureError:
+            return Response({'details':'toke has been expired'}, status=status.HTTP_400_BAD_REQUEST)
         # if token not valid
-
+        except InvalidSignatureError:
+            return Response({'details':'toke is not valid'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # object user
+        user_obj = User.objects.get(pk = user_id)
+        if user_obj.is_verified:
+             return Response({'detail':'your account has already verified'}, status=status.HTTP_200_OK)
+        # is_verified -> True
+        user_obj.is_verified = True
+        user_obj.save()
         # valid response ok
-        pass
+        return Response({'detail':'your account have been verified and activated successfully'},status=status.HTTP_200_OK)
+
+# for resend activation token
+class ActivationResendApiView(APIView):
+
+    def post(self, request, *args, **kwargs):
+        email = request.data.get('email')
+        if email:
+            user_obj = get_object_or_404(User, email=email)
+            token = self.get_tokens_for_user(user_obj)
+            # customize email send with treading
+            email_obj = EmailMessage('email/activation_email.tpl', {'token': token}, 'admin@admin.com', to=[email])
+            EmailThread(email_obj).start()
+            return Response({'detail':'user activation resend successfully'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'detail':'invalid request'}, status=status.HTTP_400_BAD_REQUEST)
+        
+    def get_tokens_for_user(self, user):
+        refresh = RefreshToken.for_user(user)
+        return str(refresh.access_token)
