@@ -18,6 +18,9 @@ from mail_templated import send_mail
 # customize email send with treading
 from mail_templated import EmailMessage
 from ..utils import EmailThread
+# for generate token manually
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 User = get_user_model()
 
@@ -111,8 +114,16 @@ class TestEmailSend(generics.GenericAPIView):
         # customize email send
         # send_mail('email/hello.tpl', {'name': 'mahdi'}, 'admin@admin.com', ['test@test.com'])
 
+        # generate token manually
+        self.email = 'metisbt@gmail.com'
+        user_obj = get_object_or_404(User, email=self.email)
+        token = self.get_tokens_for_user(user_obj)
+
         # customize email send with treading
-        email_obj = EmailMessage('email/hello.tpl', {'name': 'mahdi'}, 'admin@admin.com', to=['test@test.com'])
+        email_obj = EmailMessage('email/hello.tpl', {'token': token}, 'admin@admin.com', to=[self.email])
         EmailThread(email_obj).start()
 
         return Response('sent email')
+    def get_tokens_for_user(self, user):
+        refresh = RefreshToken.for_user(user)
+        return str(refresh.access_token)
