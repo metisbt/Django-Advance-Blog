@@ -15,7 +15,9 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 # from django.core.mail import send_mail
 # for send customize emails
 from mail_templated import send_mail
-
+# customize email send with treading
+from mail_templated import EmailMessage
+from ..utils import EmailThread
 
 User = get_user_model()
 
@@ -107,7 +109,10 @@ class TestEmailSend(generics.GenericAPIView):
             fail_silently=False,
         )"""
         # customize email send
+        # send_mail('email/hello.tpl', {'name': 'mahdi'}, 'admin@admin.com', ['test@test.com'])
 
-        send_mail('email/hello.tpl', {'name': 'mahdi'}, 'admin@admin.com', ['test@test.com'])
+        # customize email send with treading
+        email_obj = EmailMessage('email/hello.tpl', {'name': 'mahdi'}, 'admin@admin.com', to=['test@test.com'])
+        EmailThread(email_obj).start()
 
         return Response('sent email')
