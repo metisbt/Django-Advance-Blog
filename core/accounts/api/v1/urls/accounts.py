@@ -1,5 +1,5 @@
 from django.urls import path, include
-from . import views
+from .. import views
 # for auth token
 # from rest_framework.authtoken import views
 # for JWT
@@ -9,8 +9,6 @@ from . import views
 #     TokenVerifyView,
 # )
 
-
-app_name = 'ap-v1'
 
 urlpatterns = [
     # registration
@@ -25,7 +23,5 @@ urlpatterns = [
     # path('jwt/create/', views.CustomTokenObtainPairView.as_view(), name='jwt-create')
     # path('jwt/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
     # path('jwt/verify/', TokenVerifyView.as_view(), name='token-refresh'),
-    # profile
-    path('profile/', views.ProfileApiView.as_view(), name='profile')
 ]
 
