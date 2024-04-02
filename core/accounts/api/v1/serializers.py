@@ -5,7 +5,7 @@ from django.core import exceptions
 from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
 # for JWT
-# from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -94,11 +94,11 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     
 # for JWT
-"""class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
     def validate(self, attrs):
         validated_data = super().validate(attrs)
         if not self.user.is_verified:
             raise serializers.ValidationError({'detail':'User is not verified'})
         validated_data['email'] = self.user.email
-        return validated_data"""
+        return validated_data

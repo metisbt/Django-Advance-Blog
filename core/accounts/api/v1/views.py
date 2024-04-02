@@ -1,5 +1,5 @@
 from rest_framework import generics
-from .serializers import RegistrationSerializer, CustomAuthTokenSerializer, ChangePasswordApiSerializer, ProfileSerializer #TokenObtainPairSerializer
+from .serializers import RegistrationSerializer, CustomAuthTokenSerializer, ChangePasswordApiSerializer, ProfileSerializer, TokenObtainPairSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -10,7 +10,7 @@ from django.contrib.auth import get_user_model
 from accounts.models import Profile
 from django.shortcuts import get_object_or_404
 # for JWT
-# from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 User = get_user_model()
 
@@ -86,5 +86,5 @@ class ProfileApiView(generics.RetrieveUpdateAPIView):
         return obj
 
 # for JWT
-"""class CustomTokenObtainPairView(TokenObtainPairView):
-    serializer_class = TokenObtainPairSerializer"""
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = TokenObtainPairSerializer
