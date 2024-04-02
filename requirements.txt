@@ -11,3 +11,6 @@ drf-yasg[validation]
 djangorestframework-simplejwt
 
 # Deployment modules
+
+# email third partu modules
+django-mail-templated

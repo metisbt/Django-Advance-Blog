@@ -11,7 +11,10 @@ from accounts.models import Profile
 from django.shortcuts import get_object_or_404
 # for JWT
 from rest_framework_simplejwt.views import TokenObtainPairView
-from django.core.mail import send_mail
+# for send simple emails
+# from django.core.mail import send_mail
+# for send customize emails
+from mail_templated import send_mail
 
 
 User = get_user_model()
@@ -95,11 +98,16 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 class TestEmailSend(generics.GenericAPIView):
 
     def post(self, request, *args, **kwargs):
-        send_mail(
+        # simple send email
+        """send_mail(
             "Subject here",
             "Here is the message.",
             "from@example.com",
             ["to@example.com"],
             fail_silently=False,
-        )
+        )"""
+        # customize email send
+
+        send_mail('email/hello.tpl', {'name': 'mahdi'}, 'admin@admin.com', ['test@test.com'])
+
         return Response('sent email')
