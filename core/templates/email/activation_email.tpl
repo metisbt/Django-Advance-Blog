@@ -4,5 +4,5 @@
 Account activation
 {% endblock %}
 {% block html %}
-{{token}}
+https://127.0.0.1:8000/accounts/api/v1/activation/confirm/{{token}}
 {% endblock %}

@@ -34,11 +34,23 @@ class RegistrationApiView(generics.GenericAPIView):
         serializer = RegistrationSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
+            email = serializer.validated_data['email']
             data = {
-                'email':serializer.validated_data['email'],
+                'email':email,
             }
+            # generate token manually
+            user_obj = get_object_or_404(User, email=email)
+            token = self.get_tokens_for_user(user_obj)
+            # customize email send with treading
+            email_obj = EmailMessage('email/activation_email.tpl', {'token': token}, 'admin@admin.com', to=[email])
+            EmailThread(email_obj).start()
             return Response(data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+    def get_tokens_for_user(self, user):
+        refresh = RefreshToken.for_user(user)
+        return str(refresh.access_token)
     
 
 class CustomObtainAuthToken(ObtainAuthToken):
@@ -100,7 +112,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = TokenObtainPairSerializer
 
 # send email
-class TestEmailSend(generics.GenericAPIView):
+'''class TestEmailSend(generics.GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         # simple send email
@@ -126,4 +138,17 @@ class TestEmailSend(generics.GenericAPIView):
         return Response('sent email')
     def get_tokens_for_user(self, user):
         refresh = RefreshToken.for_user(user)
-        return str(refresh.access_token)
+        return str(refresh.access_token)'''
+
+# for activation token with email send in registration
+class ActivationApiView(APIView):
+
+    def get(self, request, token, *args, **kwargs):
+        # decode -> user id
+        # object user
+        # is_verified -> True
+
+        # if token not valid
+
+        # valid response ok
+        pass
