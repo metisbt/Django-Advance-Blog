@@ -11,6 +11,8 @@ from accounts.models import Profile
 from django.shortcuts import get_object_or_404
 # for JWT
 from rest_framework_simplejwt.views import TokenObtainPairView
+from django.core.mail import send_mail
+
 
 User = get_user_model()
 
@@ -88,3 +90,16 @@ class ProfileApiView(generics.RetrieveUpdateAPIView):
 # for JWT
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = TokenObtainPairSerializer
+
+# send email
+class TestEmailSend(generics.GenericAPIView):
+
+    def post(self, request, *args, **kwargs):
+        send_mail(
+            "Subject here",
+            "Here is the message.",
+            "from@example.com",
+            ["to@example.com"],
+            fail_silently=False,
+        )
+        return Response('sent email')
