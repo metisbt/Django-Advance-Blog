@@ -5,7 +5,14 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic.base import TemplateView, RedirectView
 from .models import Post
-from django.views.generic import ListView, CreateView, DetailView, FormView, UpdateView, DeleteView
+from django.views.generic import (
+    ListView,
+    CreateView,
+    DetailView,
+    FormView,
+    UpdateView,
+    DeleteView,
+)
 from .forms import PostForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
@@ -19,29 +26,34 @@ def indexView(request):
     return render(request, 'index.html')
 '''
 
+
 class IndexView(TemplateView):
-    '''
+    """
     a class based view to show index page
-    '''
-    template_name = 'index.html'
+    """
+
+    template_name = "index.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['post'] = Post.objects.all()
+        context["post"] = Post.objects.all()
         return context
-    
-''' FBV for redirect
+
+
+""" FBV for redirect
 from django.shortcuts import redirect
 def redirectToMaktab(request):
     return redirect('http://maktabkhooneh.com')
 
-'''
+"""
+
 
 class RedirectToMaktab(RedirectView):
-    url = 'https://maktabkhooneh.com'
+    url = "https://maktabkhooneh.com"
 
-class PostListView(PermissionRequiredMixin,LoginRequiredMixin,ListView):
-    permission_required = 'blog.view_post'
+
+class PostListView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
+    permission_required = "blog.view_post"
     # get objects in different ways
     """
     model = Post
@@ -53,12 +65,13 @@ class PostListView(PermissionRequiredMixin,LoginRequiredMixin,ListView):
         return posts
 
     # change name object_list to posts for templates
-    context_object_name = 'posts'
+    context_object_name = "posts"
 
     # for paginate
     paginate_by = 2
 
-class PostDetailView(LoginRequiredMixin,DetailView):
+
+class PostDetailView(LoginRequiredMixin, DetailView):
     model = Post
 
     def get_queryset(self):
@@ -66,13 +79,14 @@ class PostDetailView(LoginRequiredMixin,DetailView):
         return posts
 
     # change name object_list to posts for templates
-    context_object_name = 'posts'
+    context_object_name = "posts"
 
     # for paginate
     paginate_by = 2
 
+
 # With FormView
-'''
+"""
 class PostCreateView(FormView):
     template_name = "postform.html"
     form_class = PostForm
@@ -81,27 +95,30 @@ class PostCreateView(FormView):
     def form_valid(self, form):
         form.save()
         return super().form_valid(form)
-'''
+"""
+
 
 # With CreateView
-class PostCreateView(LoginRequiredMixin,CreateView):
+class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     # fields = ['author', 'title', 'content', 'status', 'category', 'published_date']
     form_class = PostForm
-    success_url = '/blog/post/'
+    success_url = "/blog/post/"
 
     def form_valid(self, form):
-        '''
+        """
         get user id and save before sending
-        '''
+        """
         form.instance.author = self.request.user
         return super().form_valid(form)
-    
-class PostEditView(LoginRequiredMixin,UpdateView):
+
+
+class PostEditView(LoginRequiredMixin, UpdateView):
     model = Post
     form_class = PostForm
-    success_url = '/blog/post/'
+    success_url = "/blog/post/"
 
-class PostDeleteView(LoginRequiredMixin,DeleteView):
+
+class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
-    success_url = '/blog/post/'
+    success_url = "/blog/post/"

@@ -16,3 +16,5 @@ djoser
 # email third partu modules
 django-mail-templated
 
+# refactoring and tests
+black

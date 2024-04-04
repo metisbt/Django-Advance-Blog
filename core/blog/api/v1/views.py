@@ -6,7 +6,12 @@ from blog.models import Post, Category
 from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
 from rest_framework.views import APIView
-from rest_framework.generics import GenericAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import (
+    GenericAPIView,
+    ListAPIView,
+    ListCreateAPIView,
+    RetrieveUpdateDestroyAPIView,
+)
 from .permissions import IsOwnerOrReadOnly
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -14,7 +19,7 @@ from .paginations import DefaultPagination
 
 
 # function with APIView
-'''@api_view(["GET", "POST"])
+"""@api_view(["GET", "POST"])
 @permission_classes([IsAuthenticated])
 def postList(request):
     if request.method == "GET":
@@ -25,8 +30,8 @@ def postList(request):
         serialize = PostSerializer(data=request.data)
         serialize.is_valid(raise_exception=True)
         serialize.save()
-        return Response(serialize.data)'''
-    
+        return Response(serialize.data)"""
+
 # class with APIView
 """class postList(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -72,7 +77,7 @@ class PostList(ListCreateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
     queryset = Post.objects.all()
-    
+
 
 # function with APIView
 """@api_view(["GET", "PUT", "DELETE"])
@@ -100,7 +105,7 @@ def postDetail(request,id):
     elif request.method == "DELETE":
         post.delete()
         return Response({"detail":"item removed successfully"},status=status.HTTP_204_NO_CONTENT)"""
-    
+
 # class with APIView
 """class PostDetail(APIView):
     ''' getting detail of the post and edit plus delete it'''
@@ -126,9 +131,11 @@ def postDetail(request,id):
         post.delete()
         return Response({"detail":"item removed successfully"},status=status.HTTP_204_NO_CONTENT)"""
 
+
 # with RetrieveUpdateDestroyAPIView is better
 class PostDetail(RetrieveUpdateDestroyAPIView):
-    ''' getting detail of the post and edit plus delete it'''
+    """getting detail of the post and edit plus delete it"""
+
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
     queryset = Post.objects.filter(status=True)
@@ -175,16 +182,18 @@ class PostDetail(RetrieveUpdateDestroyAPIView):
         serializer = self.serializer_class(post_object)
         return Response(serializer.data)"""
 
+
 # with ModelViewSet
 class PostModelViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     serializer_class = PostSerializer
     queryset = Post.objects.all()
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['category', 'author', 'status']
-    search_fields = ['title', 'content']
-    ordering_fields = ['published_date']
+    filterset_fields = ["category", "author", "status"]
+    search_fields = ["title", "content"]
+    ordering_fields = ["published_date"]
     pagination_class = DefaultPagination
+
 
 class CategoryModelViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]

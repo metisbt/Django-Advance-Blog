@@ -3,10 +3,10 @@ from blog import views
 from django.views.generic.base import RedirectView
 
 
-app_name = 'blog'
+app_name = "blog"
 
 urlpatterns = [
-    path("cbv-index", views.IndexView.as_view(), name='cbv-index'),
+    path("cbv-index", views.IndexView.as_view(), name="cbv-index"),
     # path(
     #     "go-to-django/",
     #     RedirectView.as_view(url="https://www.djangoproject.com/"),
@@ -23,13 +23,13 @@ urlpatterns = [
         name="redirect-to-maktabkhooneh",
     ),
     # for PostList url must like this with '/' at the end
-    path('post/', views.PostListView.as_view(), name="post-list"),
-    path('post/<int:pk>/', views.PostDetailView.as_view(), name="post-detail"),
+    path("post/", views.PostListView.as_view(), name="post-list"),
+    path("post/<int:pk>/", views.PostDetailView.as_view(), name="post-detail"),
     # for FormView
     # path('post/create/', views.PostCreateView.as_view(), name="post-create"),
     # for CreateView
-    path('post/create/', views.PostCreateView.as_view(), name="post-create"),
-    path('post/<int:pk>/edit/', views.PostEditView.as_view(), name="post-edit"),
-    path('post/<int:pk>/delete/', views.PostDeleteView.as_view(), name="post-delete"),
-    path('api/v1/', include('blog.api.v1.urls')),
+    path("post/create/", views.PostCreateView.as_view(), name="post-create"),
+    path("post/<int:pk>/edit/", views.PostEditView.as_view(), name="post-edit"),
+    path("post/<int:pk>/delete/", views.PostDeleteView.as_view(), name="post-delete"),
+    path("api/v1/", include("blog.api.v1.urls")),
 ]
