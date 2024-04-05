@@ -1,4 +1,4 @@
-from django.test import SimpleTestCase, TestCase
+from django.test import TestCase
 from datetime import datetime
 
 from blog.forms import PostForm
