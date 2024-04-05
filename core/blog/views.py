@@ -74,15 +74,15 @@ class PostListView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
 class PostDetailView(LoginRequiredMixin, DetailView):
     model = Post
 
-    def get_queryset(self):
+    """def get_queryset(self):
         posts = Post.objects.filter(status=True)
         return posts
-
+"""
     # change name object_list to posts for templates
-    context_object_name = "posts"
+    # context_object_name = "posts"
 
     # for paginate
-    paginate_by = 2
+    # paginate_by = 2
 
 
 # With FormView
