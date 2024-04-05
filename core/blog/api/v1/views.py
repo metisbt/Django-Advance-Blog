@@ -16,6 +16,7 @@ from .permissions import IsOwnerOrReadOnly
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from .paginations import DefaultPagination
+from .filters import PostFilters
 
 
 # function with APIView
@@ -73,10 +74,10 @@ def postList(request):
 
 
 # with ListCreateAPIView is better
-class PostList(ListCreateAPIView):
+"""class PostList(ListCreateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
-    queryset = Post.objects.all()
+    queryset = Post.objects.all()"""
 
 
 # function with APIView
@@ -133,12 +134,12 @@ def postDetail(request,id):
 
 
 # with RetrieveUpdateDestroyAPIView is better
-class PostDetail(RetrieveUpdateDestroyAPIView):
+'''class PostDetail(RetrieveUpdateDestroyAPIView):
     """getting detail of the post and edit plus delete it"""
 
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
-    queryset = Post.objects.filter(status=True)
+    queryset = Post.objects.filter(status=True)'''
 
 
 # with ViewSet
@@ -187,15 +188,16 @@ class PostDetail(RetrieveUpdateDestroyAPIView):
 class PostModelViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     serializer_class = PostSerializer
-    queryset = Post.objects.all()
+    queryset = Post.objects.filter(status=True)
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ["category", "author", "status"]
+    # filterset_fields = ["category", "author", "status"]
+    filterset_class = PostFilters
     search_fields = ["title", "content"]
     ordering_fields = ["published_date"]
     pagination_class = DefaultPagination
 
 
 class CategoryModelViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
     serializer_class = CategorySerializer
     queryset = Category.objects.all()

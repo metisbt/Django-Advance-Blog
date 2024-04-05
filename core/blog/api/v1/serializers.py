@@ -46,11 +46,11 @@ class PostSerializer(serializers.ModelSerializer):
             "created_date",
             "published_date",
         ]
-        read_only = ["author"]
+        read_only_fields = ["author"]
 
     def get_absolute_url(self, obj):
         request = self.context.get("request")
-        return request.build_absolute_uri(obj)
+        return request.build_absolute_uri(obj.pk)
 
     def to_representation(self, instance):
         # for get request object that send by user request
